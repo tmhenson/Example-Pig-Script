@@ -1,7 +1,10 @@
-population = LOAD '/user/hue/population.csv' USING PigStorage(',') AS (year:int, age:int, gender:int, popsize:int);
+population = LOAD '/user/hue/population.csv' USING PigStorage(',') AS 
+(year:int, age:int, gender:int, popsize:int);
 
-a = GROUP population popsize
+split_gender = GROUP population BY gender;
 
-popsize = FOREACH a GENERATE SUM(popsize) AS total;
+--results = FOREACH population GENERATE SUM(popsize);
 
-DUMP popsize;
+results = FOREACH split_gender GENERATE SUM(population.popsize), gender;
+
+DUMP results;
